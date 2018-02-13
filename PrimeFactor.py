@@ -1,5 +1,9 @@
 '''program to calculate prime factors of a number '''
 
+import sys
+import traceback
+import logging
+
 
 def prime_fact(num):
     i=2
@@ -21,17 +25,18 @@ def div(x,i):
         return(1)
 
 
+def main():
+    try:
+        num = int(input("Enter the number whose prime factors are to be calculated"))
+        l=prime_fact(num)
+        print('The prime factors are :{}'.format(l))
+    except Exception as e:
+        logging.exception('Error occurred ' + str(e))
 
-print('Enter the number whose prime factors are to be calculated')
 
-num = eval(input())
+if __name__ == "__main__":
+    main()
 
-if (type(num) == int):
-    l=prime_fact(num)
-    for i in l:
-        print('The prime factors are :{}'.format(int(i)))
-else:
-    print('Enter a Numeric Value')
 
 
 
