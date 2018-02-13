@@ -30,8 +30,9 @@ def main():
         num = int(input("Enter the number whose prime factors are to be calculated"))
         l=prime_fact(num)
         print('The prime factors are :{}'.format(l))
-    except Exception as e:
-        logging.exception('Error occurred ' + str(e))
+    except ValueError:
+        print("Could not convert data to an integer.")
+        exit(1)
 
 
 if __name__ == "__main__":
