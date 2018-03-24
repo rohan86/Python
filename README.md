@@ -1,1 +1,3 @@
-# Scala
+# Python
+
+Playing with python
