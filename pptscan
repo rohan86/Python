@@ -1,0 +1,65 @@
+import os
+from datetime import datetime
+from pptx import Presentation
+import spacyMatcherEntityRuler as matcher
+import time
+
+# This is the folder of your pptx files
+filePath = 'C:/xxxx'
+pptTags = []
+def processPPT(inputFilePath):
+    global pptTags
+    slideCount = 1
+    filename, file_extension = os.path.splitext(inputFilePath)
+    #check the file extension is pptx
+    if file_extension == '.pptx':
+        print("Processing : " + inputFilePath)
+        try:
+            pres = Presentation(inputFilePath)
+            content = ""
+            # Collect all texts from the PPT
+            for slide in pres.slides:
+                slideCount += 1
+                for shape in slide.shapes:
+                    if (shape.has_text_frame):
+                        for paragraph in shape.text_frame.paragraphs:
+                            for run in paragraph.runs:
+                                # print(run.text)
+                                content += run.text + '\n'
+            # Run spaCy to get the top 3 matched terms
+            tags = matcher.myEntityRulerMatcher(content)
+            oneItem = inputFilePath + '|' + '|'.join(map(str, tags))
+            pptTags.append(oneItem)
+        except:
+            print("Failed processing: " + inputFilePath)
+    else:
+        print("Not a pptx file: " + inputFilePath)
+def processFolder(folderPath):
+    global totalFiles
+    for file in os.listdir(folderPath):
+        # read all files and folder
+        fileNameIn = os.path.abspath(os.path.join(folderPath, file))
+        # print(fileNameIn)
+        # if this is a folder, read all files inside
+        if os.path.isdir(fileNameIn):
+            processFolder(fileNameIn)
+        # if it's file, process it
+        else:
+            processPPT(fileNameIn)
+def writeToFile(pptTags):
+    file = os.path.abspath(os.path.join(filePath, 'PPT Index_' + datetime.now().strftime("%Y%m%d") + '.txt'))
+    try:
+        fileObject = open(file, "w")
+        fileObject.write('\n'.join(pptTags))
+        fileObject.close()
+    except IOError as err:
+        print("Write to file failed")
+        print(str(err))
+def main(argv=None):
+    tic = time.perf_counter()
+    processFolder(filePath)
+    writeToFile(pptTags)
+    toc = time.perf_counter()
+    print(f"Time used: {toc - tic:0.4f} seconds")
+if __name__ == "__main__":
+    main()

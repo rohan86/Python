@@ -23,7 +23,7 @@ class MyType(type):
         super(MyType, self).__init__(name, bases, attrs)
 
         # classregistry.register(self, self.interfaces)
-        print "Would register class %s now." % self
+        print ("Would register class %s now." % self)
 
     def __add__(self, other):
         class AutoClass(self, other):
